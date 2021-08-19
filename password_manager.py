@@ -85,6 +85,7 @@ if not key_file.is_file():
 fer = get_key()
 
 print("\n-x-x-x- Password Manager Program -x-x-x-")
+print("       ¶ Made by: Ana C. M. Atala\n")
 
 mode = {
     'view': view,

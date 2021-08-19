@@ -53,6 +53,7 @@ key = load_key()
 fer = Fernet(key)
 
 print("-x-x-x- Password Manager Program -x-x-x-")
+print("         ¶ Made by: Ana C. M. Atala\n")
 
 mode = {
     'view': view,
