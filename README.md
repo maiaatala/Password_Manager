@@ -24,7 +24,7 @@ Made by: Ana C Maia Atala. :e-mail: @ ana.atala@unemat.br
 
 If using the master password version, the program will start by asking for the user to input their master password, if it is their first time using the program, any master password will be accepted, this password **must be remembered** as it will be used during the encryption and decryption process. *There's no recovery if said password is forgotten*. If the user has already set an master password, the program will stay in a loop until the correct master password is written.
 
-After running the program for the first time, a file named ```key.key``` will be created, this file is just as importante as the master passsword, it is crucial to the encrypiton and decryption process and (as with the master password), *There's no recovery if said file is deleted/altered*
+After running the program for the first time, a file named ```key.key``` will be created inside a folder named ``PS_Bin``, this file is just as importante as the master passsword, it is crucial to the encrypiton and decryption process and (as with the master password), *There's no recovery if said file is deleted/altered*
 
 In both versions, the program will ask if the user wants to ```view``` existing passwords or ```add``` new passwords to the file data.
 

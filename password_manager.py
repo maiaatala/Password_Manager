@@ -8,42 +8,45 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 #end of imports
 
 # Path to the key file and the password files.
-key_file = Path("key.key")
-pass_file = Path("passwords")
+path = Path(".\\PS_Bin")
+key_file = Path(".\\PS_Bin\\key.key")
+pass_file = Path(".\\PS_Bin\\passwords.txt")
 
 # Function that will write the key, must be run only once for one unique key
 def write_salt():
-    salt = os.urandom(16)  # a random 16 bit
-    with open("key.key", "wb") as key_file: # with open closes the file automatically
-        key_file.write(salt)
+    s = os.urandom(16)  # a random 16 bit
+    with open(key_file, "wb") as file: # with open closes the file automatically
+        file.write(s)
         #the salt must be stored, that is the random value that is being used WITH the master pwd to create an unique criptography
 
 # Function that will read the unique key
 def load_salt():
-    file = open("key.key", "rb")
-    key = file.read()
-    file.close() # closing the file
-    return key
+    with open(key_file, "rb") as file:
+        s = file.read()
+    return s
 
-# function that will make the unique fernet key
 def get_key():
-    salt = load_salt() # gets the unique salt
-    # Generates the key with the master password and the salt
-    while True: # the loop guarantees we are using the correct master password
-        master_pwd = input("What is the master Password? ")
-        master_pwd = master_pwd.encode() #we need to enconde it, cuz it need to be passed as a bites value
-
-        kdf = PBKDF2HMAC(
+    try:
+        salt = load_salt()
+    except FileNotFoundError:
+        write_salt()
+        salt = load_salt()
+    
+    while True:
+        # needs to be inside the loop ryptography.exceptions.AlreadyFinalized: PBKDF2 instances can only be used once.
+        kdf = PBKDF2HMAC( 
             algorithm = hashes.SHA256(),  # default
             length = 32,  # default
             salt = salt,
             iterations = 100000  # default
         )
+        master_pwd = input("What is the master Password? ")
+        master_pwd = master_pwd.encode() #we need to enconde it, cuz it need to be passed as a bites value
         key = base64.urlsafe_b64encode(kdf.derive(master_pwd))
         F = Fernet(key)  # generates the key with the salt + master password
-        #block to catch invalid keys
+    #block to catch invalid keys
         try:
-            #verify if a file with the password exists
+        #verify if a file with the password exists
             if pass_file.is_file():
                 with open(pass_file, 'r') as f:
                     # if the file exists, it tries to decode all the passwords in it
@@ -54,10 +57,10 @@ def get_key():
         except InvalidToken:
             print("Wrong master Password, Try again\n")
             continue  # continues the loop if invalid token error happened
-        break  # exists the loop if nothing wrong happened
+        else:
+            break  # exists the loop if nothing wrong happened
     return(F)
 
-# function that will view the passwords written in the txt file
 def view(e_fer):
     if pass_file.is_file():
         with open(pass_file, 'r') as f:
@@ -79,15 +82,16 @@ def add(e_fer):
         so you can encrypt it
         and use the decode so we can read it (take a bite and turn it to string) '''
 
-if not key_file.is_file():
-    write_salt()
+
+if not os.path.isdir(path):
+    os.mkdir(path)
 
 fer = get_key()
 
 print("\n-x-x-x- Password Manager Program -x-x-x-")
 print("       ¶ Made by: Ana C. M. Atala\n")
 
-mode = {
+mode = {  # dictionary with the functions handle
     'view': view,
     'add': add,
 }
